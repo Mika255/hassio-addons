@@ -257,13 +257,63 @@ async function getEvents() {
             for (const k in data) {
               if (!{}.hasOwnProperty.call(data, k)) 
               continue;
+
               let event = data[k];
+
               if (data[k].type === 'VEVENT') {
+
                 // Parse all the basic event fields
-                calendarItem.summary = event.summary;
-                if (event.location) {calendarItem.location = event.location.replace(/(\r\n|\n|\r)/gm, ", ");}
-                if (event.categories) {calendarItem.label = event.categories[0];}
-                if (event.description) {calendarItem.description = event.description;}
+                console.log("Parsing event " + JSON.stringify(event.summary) );
+                
+                if (event.summary) {
+                  let tempString = "";
+                  if (typeof event.summary === 'string') {
+                    console.log('Summary is a string');
+                    tempString = event.summary;
+                  } else {
+                    console.log('Summary is not a string');
+                    console.log("stringify: " + JSON.stringify(event.summary));
+                    tempString = event.summary.val.toString();
+                  }
+                  console.log("has summary " + tempString);
+                  calendarItem.summary = tempString.replace(/(\r\n|\n|\r)/gm, ", ");
+                }
+
+                if (event.location) {
+                  let tempString = "";
+                  if (typeof event.location === 'string') {
+                    console.log('Location is a string');
+                    tempString = event.location;
+                  } else {
+                    console.log('Location is not a string');
+                    console.log("stringify: " + JSON.stringify(event.location));
+                    tempString = event.location.val.toString();
+                  }
+                  console.log("has location " + tempString);
+                  calendarItem.location = tempString.replace(/(\r\n|\n|\r)/gm, ", ");
+                }
+
+                if (event.categories) {
+                  if (typeof event.categories === 'string') {
+                    console.log("has categories " + event.categories);
+                    calendarItem.label = event.categories[0];
+                   }
+                }
+
+                if (event.description) {
+                  let tempString = "";
+                  if (typeof event.description === 'string') {
+                    console.log('Description is a string');
+                    tempString = event.description;
+                  } else {
+                    console.log('Description is not a string');
+                    console.log("stringify: " + JSON.stringify(event.description));
+                    tempString = event.description.val.toString();
+                  }
+                  console.log("has description " + tempString);
+                  calendarItem.description = tempString;
+                }
+
                 calendarItem.startDate = DateTime.fromISO(event.start.toISOString()).toLocaleString(DateTime.DATETIME_SHORT);
                 let startDateISO = DateTime.fromISO(event.start.toISOString());
                 calendarItem.startDateISO = DateTime.fromISO(event.start.toISOString()).toString();
